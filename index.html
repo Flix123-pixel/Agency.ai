@@ -1,80 +1,437 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Agency.ai - Shadowflix Games & Apps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agency.ai | Shadowflix Games & Apps</title>
   <style>
+    :root {
+      --bg-black: #000000;
+      --card-black: #0a0a0a;
+      --border-gray: #1f1f1f;
+      --accent-neon: #00ff88;
+      --accent-purple: #a855f7;
+      --text-main: #ffffff;
+      --text-muted: #888888;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
+
     body {
-      background: #0d1117;
-      color: #e6edf3;
+      background-color: var(--bg-black);
+      color: var(--text-main);
       display: flex;
       flex-direction: column;
       height: 100vh;
       overflow: hidden;
     }
+
     header {
-      background: #161b22;
-      border-bottom: 1px solid #30363d;
-      padding: 12px 16px;
+      background-color: #050505;
+      border-bottom: 1px solid var(--border-gray);
+      padding: 12px 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
     }
-    .brand h1 {
-      font-size: 18px;
-      color: #58a6ff;
-    }
-    .brand p {
-      font-size: 11px;
-      color: #8b949e;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .status {
-      font-size: 12px;
-      color: #3fb950;
-      background: rgba(63, 185, 80, 0.15);
-      border: 1px solid rgba(63, 185, 80, 0.3);
-      padding: 4px 10px;
-      border-radius: 12px;
-    }
-    .chips-bar {
+
+    .brand {
       display: flex;
-      gap: 8px;
-      padding: 10px 16px;
-      background: #0d1117;
-      border-bottom: 1px solid #21262d;
-      overflow-x: auto;
-      white-space: nowrap;
+      align-items: center;
+      gap: 12px;
     }
-    .chip {
-      background: #21262d;
-      border: 1px solid #30363d;
-      color: #58a6ff;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      cursor: pointer;
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent-neon), var(--accent-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: #000;
+      font-size: 18px;
     }
-    .chip:hover {
-      background: #30363d;
+
+    .brand-titles h1 {
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      color: #fff;
     }
-    #chat-box {
+
+    .brand-titles p {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .main-workspace {
+      display: flex;
       flex: 1;
-      padding: 16px;
-      overflow-y: auto;
+      height: calc(100vh - 60px);
+      background-color: var(--bg-black);
+    }
+
+    /* Left Control Panel */
+    .controls-panel {
+      width: 380px;
+      border-right: 1px solid var(--border-gray);
+      background-color: #050505;
       display: flex;
       flex-direction: column;
+      padding: 16px;
       gap: 14px;
     }
-    .bubble {
-      max-width: 90%;
-      padding: 12px 14px;
-      border-radius:
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .tag-btn {
+      background-color: #111;
+      border: 1px solid var(--border-gray);
+      color: #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .tag-btn:hover, .tag-btn.active {
+      border-color: var(--accent-neon);
+      color: var(--accent-neon);
+      background-color: #0f1f17;
+    }
+
+    .prompt-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    textarea {
+      flex: 1;
+      background-color: #0a0a0a;
+      border: 1px solid var(--border-gray);
+      border-radius: 8px;
+      padding: 12px;
+      color: #fff;
+      font-size: 13px;
+      resize: none;
+      outline: none;
+      line-height: 1.5;
+    }
+
+    textarea:focus {
+      border-color: var(--accent-neon);
+    }
+
+    .generate-btn {
+      background: linear-gradient(90deg, #00ff88, #00bd65);
+      border: none;
+      color: #000;
+      font-weight: 700;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: opacity 0.2s;
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Right Preview & Code Panel */
+    .output-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-black);
+    }
+
+    .tabs {
+      background-color: #050505;
+      border-bottom: 1px solid var(--border-gray);
+      display: flex;
+      justify-content: space-between;
+      padding: 0 16px;
+      align-items: center;
+    }
+
+    .tab-buttons {
+      display: flex;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: #fff;
+      border-bottom-color: var(--accent-neon);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      background-color: #111;
+      border: 1px solid var(--border-gray);
+      color: #fff;
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      border-color: #fff;
+    }
+
+    .editor-container {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #code-output {
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      color: #e5e5e5;
+      border: none;
+      padding: 16px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      white-space: pre;
+      overflow: auto;
+    }
+
+    #live-preview {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: #fff;
+      display: none;
+    }
+
+    @media (max-width: 800px) {
+      .main-workspace {
+        flex-direction: column;
+      }
+      .controls-panel {
+        width: 100%;
+        height: 45vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border-gray);
+      }
+      .output-panel {
+        height: 55vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">A</div>
+      <div class="brand-titles">
+        <h1>Agency.ai</h1>
+        <p>Shadowflix Games & Apps</p>
+      </div>
+    </div>
+    <div style="font-size: 12px; color: #555;">Ready to Build</div>
+  </header>
+
+  <div class="main-workspace">
+    <!-- Controls Area -->
+    <div class="controls-panel">
+      <div>
+        <div class="section-label">Select Category</div>
+        <div class="category-grid">
+          <button class="tag-btn active" onclick="setMode('game', this)">🎮 Mini Games</button>
+          <button class="tag-btn" onclick="setMode('app', this)">📱 Web Apps</button>
+          <button class="tag-btn" onclick="setMode('html', this)">🌐 HTML / JS</button>
+          <button class="tag-btn" onclick="setMode('git', this)">🐙 GitHub Guide</button>
+        </div>
+      </div>
+
+      <div class="prompt-area">
+        <div class="section-label">Describe What You Want to Build</div>
+        <textarea id="prompt-input" placeholder="Type instructions here... (e.g. 'Create a full Flappy Bird game using canvas and JavaScript' or 'Generate an animated pricing table')"></textarea>
+      </div>
+
+      <button id="gen-btn" class="generate-btn" onclick="executeGeneration()">⚡ GENERATE CODE</button>
+    </div>
+
+    <!-- Output & Live Runner Area -->
+    <div class="output-panel">
+      <div class="tabs">
+        <div class="tab-buttons">
+          <button id="btn-tab-code" class="tab-btn active" onclick="switchTab('code')">Source Code</button>
+          <button id="btn-tab-preview" class="tab-btn" onclick="switchTab('preview')">Live Run Screen</button>
+        </div>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="copySource()">Copy</button>
+          <button class="action-btn" onclick="downloadFile()">Download File</button>
+        </div>
+      </div>
+
+      <div class="editor-container">
+        <textarea id="code-output" spellcheck="false" placeholder="// Generated code will show up here..."></textarea>
+        <iframe id="live-preview"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_KEY = "AQ.Ab8RN6Kxob6Euf2RtuGHVkj9VVgEln2luF-44BpvvU6tFhDq-A";
+    let activeMode = "game";
+
+    function setMode(mode, element) {
+      activeMode = mode;
+      document.querySelectorAll(".tag-btn").forEach(b => b.classList.remove("active"));
+      element.classList.add("active");
+
+      const promptBox = document.getElementById("prompt-input");
+      if(mode === 'game') promptBox.placeholder = "e.g. Build a 2D Space Shooter mini game with canvas and arrow keys controls";
+      if(mode === 'app') promptBox.placeholder = "e.g. Create a fully functional Stopwatch and Timer web application with lap feature";
+      if(mode === 'html') promptBox.placeholder = "e.g. Write an HTML5 Responsive Portfolio homepage with dark mode toggle";
+      if(mode === 'git') promptBox.placeholder = "e.g. How to push an existing folder to GitHub and fix pull conflicts";
+    }
+
+    function switchTab(tab) {
+      const codeView = document.getElementById("code-output");
+      const previewView = document.getElementById("live-preview");
+      const btnCode = document.getElementById("btn-tab-code");
+      const btnPreview = document.getElementById("btn-tab-preview");
+
+      if (tab === 'code') {
+        codeView.style.display = "block";
+        previewView.style.display = "none";
+        btnCode.classList.add("active");
+        btnPreview.classList.remove("active");
+      } else {
+        codeView.style.display = "none";
+        previewView.style.display = "block";
+        btnPreview.classList.add("active");
+        btnCode.classList.remove("active");
+        runPreview();
+      }
+    }
+
+    function runPreview() {
+      const code = document.getElementById("code-output").value;
+      const iframe = document.getElementById("live-preview");
+      iframe.srcdoc = code;
+    }
+
+    async function executeGeneration() {
+      const userText = document.getElementById("prompt-input").value.trim();
+      const codeArea = document.getElementById("code-output");
+      const genBtn = document.getElementById("gen-btn");
+
+      if (!userText) {
+        alert("Please write your request in the box!");
+        return;
+      }
+
+      genBtn.disabled = true;
+      genBtn.innerText = "GENERATING CODE...";
+      codeArea.value = "// Connecting to Agency.ai Engine...\n// Writing complete executable code...";
+
+      const systemPrompt = `You are the Agency.ai Engine developed by Shadowflix Games & Apps.
+You specialize in writing standalone, production-ready, clean, full executable code (HTML, CSS, JavaScript, mini-games, app boilerplates).
+CRITICAL RULES:
+- If asked for an app, website, or game, provide ONE SINGLE complete self-contained file containing all <!DOCTYPE html>, <style>, and <script> tags together so it runs out-of-the-box.
+- Do NOT include unnecessary chat talk. Directly provide the code.`;
+
+      const requestPayload = {
+        contents: [
+          {
+            parts: [
+              { text: `${systemPrompt}\n\nCategory: ${activeMode}\nTask: ${userText}` }
+            ]
+          }
+        ]
+      };
+
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestPayload)
+        });
+
+        const data = await res.json();
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+          let output = data.candidates[0].content.parts[0].text;
+          // Clean markdown wrappers if any
+          output = output.replace(/^```[a-z]*\n/i, "").replace(/\n```$/, "");
+          codeArea.value = output;
+          runPreview();
+        } else if (data.error) {
+          codeArea.value = "// Error: " + data.error.message;
+        } else {
+          codeArea.value = "// No response received. Try modifying your prompt.";
+        }
+      } catch (err) {
+        codeArea.value = "// Network error: Failed to reach AI endpoint.";
+      } finally {
+        genBtn.disabled = false;
+        genBtn.innerText = "⚡ GENERATE CODE";
+      }
+    }
+
+    function copySource() {
+      const code = document.getElementById("code-output").value;
+      navigator.clipboard.writeText(code).then(() => alert("Code copied to clipboard!"));
+    }
+
+    function downloadFile() {
+      const code = document.getElementById("code-output").value;
+      const blob = new Blob([code], { type: "text/html" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "agency_generated_code.html";
+      link.click();
+    }
+  </script>
+</body>
+</html>
