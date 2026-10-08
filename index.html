@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Agency.ai | Shadowflix Games & Apps</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --panel: #161b22;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --text: #c9d1d9;
+      --text-bright: #f0f6fc;
+      --code-bg: #030712;
+      --green: #238636;
+      --green-hover: #2ea043;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .brand h1 {
+      font-size: 19px;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .brand p {
+      font-size: 11px;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+    .badge {
+      font-size: 11px;
+      color: #3fb950;
+      background: rgba(63, 185, 80, 0.12);
+      border: 1px solid rgba(63, 185, 80, 0.4);
+      padding: 4px 8px;
+      border-radius: 20px;
+    }
+    #chat {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .msg {
+      max-width: 88%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: #1f6feb;
+      color: #fff;
+      border-bottom-right-radius: 2px;
+    }
+    .msg.ai {
+      align-self: flex-start;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text-bright);
+      border-bottom-left-radius: 2px;
+    }
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #11161d;
+      padding: 6px 12px;
+      font-size: 11px;
+      color: #8b949e;
+      border-bottom: 1px solid var(--border);
+    }
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .copy-btn:hover {
+      background: var(--border);
+    }
+    pre {
+      padding: 12px;
+      overflow-x: auto;
+      color: #7ee787;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+    .input-container {
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      padding: 12px;
+      display: flex;
+      gap: 8px;
+    }
+    input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--accent);
+    }
+    button.send-btn {
+      background: var(--green);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      padding: 0 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button.send-btn:hover {
+      background: var(--green-hover);
+    }
+    button.send-btn:disabled {
+      background: #21262d;
+      color: #6e7681;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <h1>Agency.ai</h1>
+      <p>Shadowflix Games & Apps</p>
+    </div>
+    <div class="badge">● Online</div>
+  </header>
+
+  <div id="chat">
+    <div class="msg ai">
+      Namaste! Main **Agency.ai** hoon (powered by Shadowflix Games & Apps).<br><br>
+      Mujhse aap:
+      <ul style="margin: 8px 0 0 18px;">
+        <li>HTML / CSS / JavaScript code banwa sakte ho</li>
+        <li>Mini-games aur App codes le sakte ho</li>
+        <li>GitHub repositories, push, pull, aur branches ki guide le sakte ho</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="input-container">
+    <input type="text" id="userInput" placeholder="Likhin: Game code, HTML page, ya GitHub help..." onkeypress="if(event.key === 'Enter') sendQuery()" />
+    <button class="send-btn" id="sendBtn" onclick="sendQuery()">Send</button>
+  </div>
+
+  <script>
+    // Aapki exact Gemini API Key configure ho chuki hai
+    const GEMINI_API_KEY = "AQ.Ab8RN6Kxob6Euf2RtuGHVkj9VVgEln2luF-44BpvvU6tFhDq-A";
+
+    const chat = document.getElementById("chat");
+    const userInput = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    function renderMessage(sender, content) {
+      const msg = document.createElement("div");
+      msg.className = `msg ${sender}`;
+
+      if (content.includes("```")) {
+        const parts = content.split(/```/g);
+        msg.innerHTML = "";
+        parts.forEach((part, index) => {
+          if (index % 2 === 1) {
+            let codeLines = part.trim().split("\n");
+            let lang = "code";
+            if (codeLines[0] && !codeLines[0].includes(" ") && codeLines[0].length < 15) {
+              lang = codeLines.shift();
+            }
+            let rawCode = codeLines.join("\n");
+
+            const block = document.createElement("div");
+            block.className = "code-block";
+
+            const head = document.createElement("div");
+            head.className = "code-header";
+            head.innerHTML = `<span>${lang.toUpperCase()}</span><button class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.nextElementSibling.innerText); this.innerText='Copied!'; setTimeout(()=>this.innerText='Copy', 1500)">Copy</button>`;
+
+            const pre = document.createElement("pre");
+            pre.innerText = rawCode;
+
+            block.appendChild(head);
+            block.appendChild(pre);
+            msg.appendChild(block);
+          } else {
+            const p = document.createElement("div");
+            p.innerText = part;
+            msg.appendChild(p);
+          }
+        });
+      } else {
+        msg.innerText = content;
+      }
+
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function sendQuery() {
+      const q = userInput.value.trim();
+      if (!q) return;
+
+      renderMessage("user", q);
+      userInput.value = "";
+      sendBtn.disabled = true;
+      sendBtn.innerText = "...";
+
+      const systemInstruction = "You are Agency.ai, an AI developer assistant created by 'Shadowflix Games & Apps'. You generate full functional HTML, CSS, JavaScript, game codes, application boilerplates, and step-by-step GitHub workflow instructions. Always write clean code inside standard markdown code blocks (```). Answer queries in clear Hinglish/English.";
+
+      const url = `[https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$](https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$){GEMINI_API_KEY}`;
+
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  { text: systemInstruction + "\n\nUser request: " + q }
+                ]
+              }
+            ]
+          })
+        });
+
+        const data = await res.json();
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+          renderMessage("ai", data.candidates[0].content.parts[0].text);
+        } else if (data.error) {
+          renderMessage("ai", `API Error: ${data.error.message || 'Key invalid ya project me API disabled hai.'}`);
+        } else {
+          renderMessage("ai", "Koi response generate nahi hua. Dobara try karein.");
+        }
+      } catch (err) {
+        renderMessage("ai", "Network error: Internet connection ya API endpoint check karein.");
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerText = "Send";
+      }
+    }
+  </script>
+</body>
+</html>
